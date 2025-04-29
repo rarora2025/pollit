@@ -9,9 +9,14 @@ const port = process.env.PORT || 3000;
 
 // CORS configuration
 app.use(cors({
-    origin: ['https://rarora2025.github.io', 'http://localhost:3000'],
-    methods: ['GET', 'POST'],
-    credentials: true
+    origin: [
+        'https://rarora2025.github.io',
+        'http://localhost:3000',
+        'https://pollit-backend-6b36ba4351c1.herokuapp.com'
+    ],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
