@@ -1,0 +1,19 @@
+{
+  "name": "pollit-backend",
+  "version": "1.0.0",
+  "description": "Backend for Poll.it",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
