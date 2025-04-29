@@ -161,7 +161,14 @@ async function fetchNews() {
     clearCache();
     
     try {
+        console.log('Fetching from:', `${API_BASE_URL}/news`);
         const response = await fetch(`${API_BASE_URL}/news`);
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
         console.log('Received data:', data);
         
@@ -181,13 +188,19 @@ async function fetchNews() {
             `;
         } else {
             console.error('Invalid data received:', data);
+            articlesContainer.innerHTML = `
+                <div class="error-message">
+                    <h2>Error loading articles</h2>
+                    <p>Invalid data received from server.</p>
+                </div>
+            `;
         }
     } catch (error) {
         console.error('Error fetching news:', error);
         articlesContainer.innerHTML = `
             <div class="error-message">
                 <h2>Error loading articles</h2>
-                <p>Please try again later.</p>
+                <p>${error.message}</p>
             </div>
         `;
     }
