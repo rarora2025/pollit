@@ -7,36 +7,80 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.static('public'));
+// CORS configuration
+app.use(cors({
+    origin: [
+        'https://rarora2025.github.io',
+        'http://localhost:3000',
+        'https://pollit-backend-6b36ba4351c1.herokuapp.com'
+    ],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Something broke!' });
+app.use(express.json());
+
+// Debug endpoint
+app.get('/', (req, res) => {
+    res.json({ message: 'Server is running' });
+});
+
+// API root endpoint
+app.get('/api', (req, res) => {
+    res.json({ 
+        message: 'API is running',
+        endpoints: {
+            news: '/api/news',
+            generateContent: '/api/generate-content'
+        }
+    });
 });
 
 // News API endpoint
 app.get('/api/news', async (req, res) => {
     try {
+        console.log('Fetching news...');
+        console.log('NEWS_API_KEY:', process.env.NEWS_API_KEY ? 'Set' : 'Not set');
+        
         if (!process.env.NEWS_API_KEY) {
             throw new Error('NEWS_API_KEY is not defined');
         }
 
-        const response = await fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${process.env.NEWS_API_KEY}`);
+        const url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${process.env.NEWS_API_KEY}`;
+        console.log('Fetching from URL:', url);
+
+        const response = await fetch(url);
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`NewsAPI responded with status: ${response.status}`);
+        }
+
         const data = await response.json();
+        console.log('News API response:', data);
+        
+        if (data.status === 'error') {
+            throw new Error(`NewsAPI error: ${data.message}`);
+        }
+
         res.json(data);
     } catch (error) {
         console.error('Error fetching news:', error);
-        res.status(500).json({ error: 'Failed to fetch news' });
+        res.status(500).json({ 
+            error: 'Failed to fetch news', 
+            details: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 });
 
 // OpenAI API endpoint
 app.post('/api/generate-content', async (req, res) => {
     try {
+        console.log('Generating content...');
+        console.log('OPENAI_API_KEY:', process.env.OPENAI_API_KEY ? 'Set' : 'Not set');
+        
         if (!process.env.OPENAI_API_KEY) {
             throw new Error('OPENAI_API_KEY is not defined');
         }
@@ -67,17 +111,21 @@ app.post('/api/generate-content', async (req, res) => {
             })
         });
 
+        if (!response.ok) {
+            throw new Error(`OpenAI API responded with status: ${response.status}`);
+        }
+
         const data = await response.json();
+        console.log('OpenAI API response:', data);
         res.json(data);
     } catch (error) {
         console.error('Error generating content:', error);
-        res.status(500).json({ error: 'Failed to generate content' });
+        res.status(500).json({ 
+            error: 'Failed to generate content', 
+            details: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
-});
-
-// Serve index.html for all other routes
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Start server
