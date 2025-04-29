@@ -1,6 +1,6 @@
 const API_BASE_URL = window.location.hostname === 'localhost' 
     ? 'http://localhost:3000/api'
-    : 'https://rarora2025.github.io/pollit/api';
+    : 'https://pollit-backend.herokuapp.com/api';
 
 // DOM Elements
 const articlesContainer = document.getElementById('articles-container');
