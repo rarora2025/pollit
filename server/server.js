@@ -12,31 +12,37 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Something broke!' });
+// Debug endpoint
+app.get('/', (req, res) => {
+    res.json({ message: 'Server is running' });
 });
 
 // News API endpoint
 app.get('/api/news', async (req, res) => {
     try {
+        console.log('Fetching news...');
+        console.log('NEWS_API_KEY:', process.env.NEWS_API_KEY ? 'Set' : 'Not set');
+        
         if (!process.env.NEWS_API_KEY) {
             throw new Error('NEWS_API_KEY is not defined');
         }
 
         const response = await fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${process.env.NEWS_API_KEY}`);
         const data = await response.json();
+        console.log('News API response:', data);
         res.json(data);
     } catch (error) {
         console.error('Error fetching news:', error);
-        res.status(500).json({ error: 'Failed to fetch news' });
+        res.status(500).json({ error: 'Failed to fetch news', details: error.message });
     }
 });
 
 // OpenAI API endpoint
 app.post('/api/generate-content', async (req, res) => {
     try {
+        console.log('Generating content...');
+        console.log('OPENAI_API_KEY:', process.env.OPENAI_API_KEY ? 'Set' : 'Not set');
+        
         if (!process.env.OPENAI_API_KEY) {
             throw new Error('OPENAI_API_KEY is not defined');
         }
@@ -68,10 +74,11 @@ app.post('/api/generate-content', async (req, res) => {
         });
 
         const data = await response.json();
+        console.log('OpenAI API response:', data);
         res.json(data);
     } catch (error) {
         console.error('Error generating content:', error);
-        res.status(500).json({ error: 'Failed to generate content' });
+        res.status(500).json({ error: 'Failed to generate content', details: error.message });
     }
 });
 
