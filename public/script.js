@@ -1,6 +1,6 @@
 const API_BASE_URL = window.location.hostname === 'localhost' 
     ? 'http://localhost:3000/api'
-    : 'https://pollit-backend.herokuapp.com/api';
+    : 'https://pollit-backend-6b36ba4351c1.herokuapp.com/api';
 
 // DOM Elements
 const articlesContainer = document.getElementById('articles-container');
