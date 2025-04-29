@@ -4,10 +4,13 @@ on:
   push:
     branches:
       - main
+      - gh-pages
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -24,12 +27,11 @@ jobs:
         run: |
           mkdir -p dist
           cp -r public/* dist/
-          cp server.js dist/
-          cp package.json dist/
-          cp .env dist/
+          cp index.html dist/
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
           branch: gh-pages
-          folder: dist 
+          folder: dist
+          clean: true 
