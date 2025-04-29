@@ -7,13 +7,29 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware
-app.use(cors());
+// CORS configuration
+app.use(cors({
+    origin: ['https://rarora2025.github.io', 'http://localhost:3000'],
+    methods: ['GET', 'POST'],
+    credentials: true
+}));
+
 app.use(express.json());
 
 // Debug endpoint
 app.get('/', (req, res) => {
     res.json({ message: 'Server is running' });
+});
+
+// API root endpoint
+app.get('/api', (req, res) => {
+    res.json({ 
+        message: 'API is running',
+        endpoints: {
+            news: '/api/news',
+            generateContent: '/api/generate-content'
+        }
+    });
 });
 
 // News API endpoint
@@ -26,13 +42,31 @@ app.get('/api/news', async (req, res) => {
             throw new Error('NEWS_API_KEY is not defined');
         }
 
-        const response = await fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${process.env.NEWS_API_KEY}`);
+        const url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${process.env.NEWS_API_KEY}`;
+        console.log('Fetching from URL:', url);
+
+        const response = await fetch(url);
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`NewsAPI responded with status: ${response.status}`);
+        }
+
         const data = await response.json();
         console.log('News API response:', data);
+        
+        if (data.status === 'error') {
+            throw new Error(`NewsAPI error: ${data.message}`);
+        }
+
         res.json(data);
     } catch (error) {
         console.error('Error fetching news:', error);
-        res.status(500).json({ error: 'Failed to fetch news', details: error.message });
+        res.status(500).json({ 
+            error: 'Failed to fetch news', 
+            details: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 });
 
@@ -72,12 +106,20 @@ app.post('/api/generate-content', async (req, res) => {
             })
         });
 
+        if (!response.ok) {
+            throw new Error(`OpenAI API responded with status: ${response.status}`);
+        }
+
         const data = await response.json();
         console.log('OpenAI API response:', data);
         res.json(data);
     } catch (error) {
         console.error('Error generating content:', error);
-        res.status(500).json({ error: 'Failed to generate content', details: error.message });
+        res.status(500).json({ 
+            error: 'Failed to generate content', 
+            details: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 });
 
