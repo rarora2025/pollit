@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poll.it</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo-container">
+                <img src="logo.png" alt="Poll.it Logo" class="logo-image">
+                <div class="logo">Poll.it</div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="content-container">
+        <div class="content-wrapper" id="articles-container">
+            <!-- Articles will be dynamically inserted here -->
+        </div>
+        <div class="navigation-controls">
+            <button id="prev-button" class="nav-button">←</button>
+            <button id="next-button" class="nav-button">→</button>
+        </div>
+    </main>
+
+    <div id="article-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Full Article</h2>
+            </div>
+            <div class="modal-body">
+                <div id="modal-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
