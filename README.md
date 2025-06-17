@@ -1,40 +1,61 @@
-# Political Literacy Hub
+# Poll.it
 
-A modern web platform that promotes political literacy by using AI to analyze and present political news in an engaging and educational way.
+A news polling application that allows users to vote on news articles and share their opinions.
+
+## Setup Instructions
+
+1. Clone the repository:
+```bash
+git clone https://github.com/rarora2025/pollit.git
+cd pollit
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Set up environment variables:
+Create a `.env` file in the root directory with the following variables:
+```
+NEWS_API_KEY=your_news_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
+UNSPLASH_API_KEY=your_unsplash_api_key_here
+PORT=3000
+```
+
+4. Run the application:
+```bash
+npm start
+```
+
+The application will be available at http://localhost:3000
+
+## Environment Variables
+
+- `NEWS_API_KEY`: Your News API key from https://newsapi.org
+- `OPENAI_API_KEY`: Your OpenAI API key
+- `UNSPLASH_API_KEY`: Your Unsplash API key (optional, will use fallback images if not provided)
+- `PORT`: The port number to run the server on (default: 3000)
 
 ## Features
 
-- **AI-Written Summaries**: Neutral, clear summaries of political news with optional "deeper dive" sections
-- **Bias Detection**: Articles are scanned for potential political bias with a visual bias meter
-- **Level Options**: Choose how detailed you want the article to be (Basic, High School, Expert)
-- **Interactive Explainers**: Pop-up definitions for political terms and concepts
-- **Question Generator**: Critical thinking questions at the end of each article
-- **Perspective Generator**: View articles from multiple ideological viewpoints
-- **Gamified Learning**: Earn badges for completing political literacy quizzes
+- Real-time news updates
+- Interactive polls for each article
+- Category-based news browsing
+- Responsive design
+- Image fallbacks for missing article images
 
 ## Technologies Used
 
-- HTML5
-- CSS3
-- JavaScript (ES6+)
-- NewsAPI
-- Chart.js for data visualization
-- Responsive design for all devices
-
-## Getting Started
-
-1. Clone the repository
-2. Open `index.html` in your browser
-3. The application will automatically fetch and display the latest political news
-
-## API Key
-
-The application uses the NewsAPI. You'll need to replace the API key in `script.js` with your own key from [NewsAPI](https://newsapi.org/).
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
+- Node.js
+- Express.js
+- News API
+- OpenAI API
+- Unsplash API
+- HTML5/CSS3
+- JavaScript
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+© 2025 Rahul Arora. All rights reserved. 
