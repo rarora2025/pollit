@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 3000;
 
 // CORS configuration
 app.use(cors({
-    origin: ['https://rarora2025.github.io', 'http://localhost:3000', 'https://pollit-backend-6b36ba4351c1.herokuapp.com'],
+    origin: ['https://poll-it.app', 'http://localhost:3000', 'https://pollit-backend-6b36ba4351c1.herokuapp.com'],
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Accept', 'Authorization', 'Origin'],
     exposedHeaders: ['Content-Type', 'Access-Control-Allow-Origin'],
@@ -45,7 +45,11 @@ if (!NEWS_API_KEY) {
     process.exit(1);
 }
 
-const UNSPLASH_API_KEY = 'YOUR_UNSPLASH_API_KEY'; // You'll need to get this from Unsplash
+const UNSPLASH_API_KEY = process.env.UNSPLASH_API_KEY;
+if (!UNSPLASH_API_KEY) {
+    console.warn('UNSPLASH_API_KEY environment variable is not set - image fallbacks will be used');
+}
+
 const NEWS_API_BASE_URL = 'https://newsapi.org/v2';
 
 // Cache for Unsplash images
@@ -54,6 +58,11 @@ const unsplashCache = new Map();
 // Get a random image from Unsplash
 async function getUnsplashImage(query) {
     try {
+        if (!UNSPLASH_API_KEY) {
+            console.log('No Unsplash API key available, using fallback image');
+            return `https://picsum.photos/800/400?random=${Math.random()}`;
+        }
+
         if (unsplashCache.has(query)) {
             return unsplashCache.get(query);
         }
@@ -68,7 +77,8 @@ async function getUnsplashImage(query) {
         );
 
         if (!response.ok) {
-            throw new Error('Failed to fetch from Unsplash');
+            console.warn('Failed to fetch from Unsplash, using fallback');
+            return `https://picsum.photos/800/400?random=${Math.random()}`;
         }
 
         const data = await response.json();
@@ -77,7 +87,7 @@ async function getUnsplashImage(query) {
         return imageUrl;
     } catch (error) {
         console.error('Error fetching from Unsplash:', error);
-        return null;
+        return `https://picsum.photos/800/400?random=${Math.random()}`;
     }
 }
 
