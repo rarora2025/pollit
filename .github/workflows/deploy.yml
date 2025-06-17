@@ -3,8 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main
-      - gh-pages
+      - gh-pages-new
 
 permissions:
   contents: write
@@ -39,6 +38,6 @@ jobs:
         id: deployment
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: gh-pages
+          branch: gh-pages-new
           folder: dist
           clean: true 
